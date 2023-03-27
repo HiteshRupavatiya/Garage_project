@@ -1,12 +1,12 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\GarageController;
 use App\Http\Controllers\ServiceTypeController;
 use App\Http\Controllers\StateController;
-use App\Models\ServiceType;
-use Illuminate\Http\Request;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,41 +20,58 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::controller(CountryController::class)->prefix('country')->group(function () {
-    Route::post('list', 'list');
-    Route::post('create', 'create');
-    Route::get('get/{id}', 'get');
-    Route::put('update/{id}', 'update');
-    Route::delete('delete/{id}', 'delete');
-    Route::delete('force-delete/{id}', 'forceDelete');
+Route::controller(AuthController::class)->prefix('user')->group(function () {
+    Route::post('register', 'register');
+    Route::post('login', 'login');
+    Route::get('verify-email/{token}', 'verifyEmail');
 });
 
-Route::controller(StateController::class)->prefix('state')->group(function () {
-    Route::post('list', 'list');
-    Route::post('create', 'create');
-    Route::get('get/{id}', 'get');
-    Route::put('update/{id}', 'update');
-    Route::delete('delete/{id}', 'delete');
-    Route::delete('force-delete/{id}', 'forceDelete');
+Route::middleware(['auth:api', 'admin'])->group(function () {
+    Route::post('user/logout', [UserController::class, 'logout'])->withoutMiddleware(['admin']);
+
+    Route::controller(CountryController::class)->prefix('country')->group(function () {
+        Route::post('list', 'list');
+        Route::post('create', 'create');
+        Route::get('get/{id}', 'get');
+        Route::put('update/{id}', 'update');
+        Route::delete('delete/{id}', 'delete');
+        Route::delete('force-delete/{id}', 'forceDelete');
+    });
+
+    Route::controller(StateController::class)->prefix('state')->group(function () {
+        Route::post('list', 'list');
+        Route::post('create', 'create');
+        Route::get('get/{id}', 'get');
+        Route::put('update/{id}', 'update');
+        Route::delete('delete/{id}', 'delete');
+        Route::delete('force-delete/{id}', 'forceDelete');
+    });
+
+    Route::controller(CityController::class)->prefix('city')->group(function () {
+        Route::post('list', 'list');
+        Route::post('create', 'create');
+        Route::get('get/{id}', 'get');
+        Route::put('update/{id}', 'update');
+        Route::delete('delete/{id}', 'delete');
+        Route::delete('force-delete/{id}', 'forceDelete');
+    });
+
+    Route::controller(ServiceTypeController::class)->prefix('service-type')->group(function () {
+        Route::post('list', 'list');
+        Route::post('create', 'create');
+        Route::get('get/{id}', 'get');
+        Route::put('update/{id}', 'update');
+        Route::delete('delete/{id}', 'delete');
+        Route::delete('force-delete/{id}', 'forceDelete');
+    });
 });
 
-Route::controller(CityController::class)->prefix('city')->group(function () {
-    Route::post('list', 'list');
-    Route::post('create', 'create');
-    Route::get('get/{id}', 'get');
-    Route::put('update/{id}', 'update');
-    Route::delete('delete/{id}', 'delete');
-    Route::delete('force-delete/{id}', 'forceDelete');
-});
-
-Route::controller(ServiceTypeController::class)->prefix('service-type')->group(function () {
-    Route::post('list', 'list');
-    Route::post('create', 'create');
-    Route::get('get/{id}', 'get');
-    Route::put('update/{id}', 'update');
-    Route::delete('delete/{id}', 'delete');
-    Route::delete('force-delete/{id}', 'forceDelete');
-});
-
-Route::controller(GarageController::class)->prefix('garage')->group(function () {
+Route::middleware(['auth:api', 'garage_owner'])->group(function () {
+    Route::controller(GarageController::class)->prefix('garage')->group(function () {
+        Route::post('list', 'list');
+        Route::post('create', 'create');
+        Route::get('get/{id}', 'get');
+        Route::put('update/{id}', 'update');
+        Route::delete('delete/{id}', 'delete');
+    });
 });
