@@ -20,7 +20,7 @@ class CountryController extends Controller
         $data = $this->filterSearchPagination($country, $searchableFields);
 
         return ok('Countries Fetched Successfully', [
-            'countries' => $data['query']->with('states', 'cities')->get(),
+            'countries' => $data['query']->with('states')->get(),
             'count'     => $data['count']
         ]);
     }
