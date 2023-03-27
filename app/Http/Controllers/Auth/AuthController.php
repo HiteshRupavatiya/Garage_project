@@ -23,6 +23,7 @@ class AuthController extends Controller
             'password'              => 'required|min:8|max:15',
             'password_confirmation' => 'required|same:password',
             'profile_picture'       => 'required|image|mimes:png,jpg,jpeg',
+            'type'                  => 'required|in:Customer,Garage Owner,Mechanic,Admin',
             'address1'              => 'required|string|min:10|max:150',
             'address2'              => 'nullable|string|min:10|max:150',
             'zip_code'              => 'required|numeric|digits:6',
@@ -50,6 +51,7 @@ class AuthController extends Controller
                     'address2',
                     'zip_code',
                     'city_id',
+                    'type'
                 ]
             )
                 + [
