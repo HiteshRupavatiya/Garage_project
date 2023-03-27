@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email_verification_token');
             $table->bigInteger('phone')->unique()->nullable(false)->after('email');
             $table->string('profile_picture')->nullable(false);
-            $table->enum('type', ['Customer', 'Mechanic'])->default('Customer');
+            $table->enum('type', ['Customer', 'Mechanic', 'Garage Owner', 'Admin'])->default('Customer');
             $table->string('billable_name')->nullable(false);
             $table->string('address1')->nullable(false);
             $table->string('address2')->nullable();
