@@ -23,7 +23,7 @@ class Country extends Model
 
     public function states()
     {
-        return $this->hasMany(State::class, 'country_id', 'id');
+        return $this->hasMany(State::class, 'country_id', 'id')->with('cities');
     }
 
     public function cities()
