@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->string('email_verification_token');
             $table->bigInteger('phone')->unique()->nullable(false)->after('email');
             $table->string('profile_picture')->nullable(false);
             $table->enum('type', ['Customer', 'Mechanic'])->default('Customer');
@@ -22,8 +23,8 @@ return new class extends Migration
             $table->string('address2')->nullable();
             $table->bigInteger('zip_code')->nullable(false);
             $table->foreignId('city_id')->constrained('cities');
-            $table->foreignId('garage_id')->constrained('garages');
-            $table->foreignId('service_type_id')->constrained('service_types');
+            $table->foreignId('garage_id')->nullable()->constrained('garages');
+            $table->foreignId('service_type_id')->nullable()->constrained('service_types');
             $table->softDeletes();
         });
     }
