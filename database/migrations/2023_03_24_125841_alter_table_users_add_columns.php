@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('address1')->nullable(false);
             $table->string('address2')->nullable();
             $table->bigInteger('zip_code')->nullable(false);
-            $table->foreignId('city_id')->constrained('cities');
+            $table->foreignId('city_id')->nullable()->constrained('cities');
             $table->foreignId('garage_id')->nullable()->constrained('garages');
             $table->foreignId('service_type_id')->nullable()->constrained('service_types');
             $table->softDeletes();

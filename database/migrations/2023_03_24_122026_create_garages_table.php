@@ -19,10 +19,10 @@ return new class extends Migration
             $table->text('address1')->nullable(false);
             $table->text('address2')->nullable();
             $table->bigInteger('zip_code');
-            $table->foreignId('city_id')->constrained('cities');
-            $table->foreignId('state_id')->constrained('states');
-            $table->foreignId('country_id')->constrained('countries');
-            $table->foreignId('owner_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('city_id')->constrained('cities')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('state_id')->constrained('states')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('country_id')->constrained('countries')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('owner_id')->nullable()->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -55,4 +55,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function garage()
+    {
+        return $this->hasOne(Garage::class, 'owner_id', 'id');
+    }
+
+    public function userServiceTypes()
+    {
+        return $this->belongsToMany(UserServiceType::class, 'user_service_types', 'user_id', 'service_type_id');
+    }
+
+    public function cars()
+    {
+        return $this->hasMany(Cars::class, 'owner_id', 'id');
+    }
 }

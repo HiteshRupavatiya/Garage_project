@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CarController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\GarageController;
@@ -68,10 +69,23 @@ Route::middleware(['auth:api', 'admin'])->group(function () {
 
 Route::middleware(['auth:api', 'garage_owner'])->group(function () {
     Route::controller(GarageController::class)->prefix('garage')->group(function () {
+        Route::post('list', 'list')->withoutMiddleware(['garage_owner']);
+        Route::post('create', 'create');
+        Route::post('add-mechanic', 'addMechanic');
+        Route::get('get/{id}', 'get');
+        Route::put('update/{id}', 'update');
+        Route::delete('delete/{id}', 'delete');
+        Route::delete('force-delete/{id}', 'forceDelete');
+    });
+});
+
+Route::middleware(['auth:api', 'customer'])->group(function () {
+    Route::controller(CarController::class)->prefix('car')->group(function () {
         Route::post('list', 'list');
         Route::post('create', 'create');
         Route::get('get/{id}', 'get');
         Route::put('update/{id}', 'update');
         Route::delete('delete/{id}', 'delete');
+        Route::delete('force-delete/{id}', 'forceDelete');
     });
 });

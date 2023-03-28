@@ -19,7 +19,7 @@ class Garage extends Model
         'city_id',
         'state_id',
         'country_id',
-        'owner_id',
+        'owner_id'
     ];
 
     protected $hidden = [
@@ -33,12 +33,12 @@ class Garage extends Model
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    public function garage_service_types()
+    public function garageServiceTypes()
     {
-        return $this->hasMany(GarageServiceType::class, 'garage_id');
+        return $this->belongsToMany(GarageServiceType::class, 'garage_service_types', 'garage_id', 'service_type_id');
     }
 
-    public function car_services()
+    public function carServices()
     {
         return $this->hasMany(CarServicing::class, 'garage_id');
     }

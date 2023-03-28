@@ -8,4 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class GarageServiceType extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'service_type_id',
+        'garage_id'
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
+    public function garage()
+    {
+        return $this->belongsToMany(Garage::class, 'garages');
+    }
 }

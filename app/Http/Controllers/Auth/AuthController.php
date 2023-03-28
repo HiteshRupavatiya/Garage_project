@@ -23,13 +23,13 @@ class AuthController extends Controller
             'password'              => 'required|min:8|max:15',
             'password_confirmation' => 'required|same:password',
             'profile_picture'       => 'required|image|mimes:png,jpg,jpeg',
-            'type'                  => 'required|in:Customer,Garage Owner,Mechanic,Admin',
+            'type'                  => 'required|in:Customer,Garage Owner,Mechanic',
             'address1'              => 'required|string|min:10|max:150',
             'address2'              => 'nullable|string|min:10|max:150',
             'zip_code'              => 'required|numeric|digits:6',
             'city_id'               => 'required|exists:cities,id',
             'garage_id'             => 'nullable|exists:garages,id',
-            'service_type_id'       => 'nullable|exists:service_types,id'
+            'service_type_id'       => 'nullable|array|required_if:type,Mechanic|exists:service_types,id'
         ]);
 
         $garage_id = $request->garage_id ?? null;
@@ -65,6 +65,10 @@ class AuthController extends Controller
                     'address2'                 => $address2
                 ]
         );
+
+        if ($request->service_type_id) {
+            $user->userServiceTypes()->attach($request->service_type_id);
+        }
 
         if ($user) {
             $file->move(public_path('storage/'), $file_name);
