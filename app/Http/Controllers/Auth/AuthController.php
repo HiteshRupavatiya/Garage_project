@@ -29,7 +29,7 @@ class AuthController extends Controller
             'zip_code'              => 'required|numeric|digits:6',
             'city_id'               => 'required|exists:cities,id',
             'garage_id'             => 'nullable|exists:garages,id',
-            'service_type_id'       => 'nullable|array|required_if:type,Mechanic|exists:service_types,id'
+            'service_type_id'       => 'nullable|required_if:type,Mechanic|exists:service_types,id'
         ]);
 
         $garage_id = $request->garage_id ?? null;
@@ -67,7 +67,7 @@ class AuthController extends Controller
         );
 
         if ($request->service_type_id) {
-            $user->userServiceTypes()->attach($request->service_type_id);
+            $user->userServiceTypes()->attach([$request->service_type_id]);
         }
 
         if ($user) {

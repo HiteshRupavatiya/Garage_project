@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CarController;
+use App\Http\Controllers\CarServicingController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\GarageController;
 use App\Http\Controllers\ServiceTypeController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\UserController;
+use App\Models\CarServicing;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -82,10 +84,17 @@ Route::middleware(['auth:api', 'garage_owner'])->group(function () {
 Route::middleware(['auth:api', 'customer'])->group(function () {
     Route::controller(CarController::class)->prefix('car')->group(function () {
         Route::post('list', 'list');
+        Route::post('search-garage', 'searchGarage');
         Route::post('create', 'create');
         Route::get('get/{id}', 'get');
         Route::put('update/{id}', 'update');
         Route::delete('delete/{id}', 'delete');
         Route::delete('force-delete/{id}', 'forceDelete');
+    });
+
+    Route::controller(CarServicingController::class)->prefix('car-service')->group(function () {
+        Route::post('create', 'create');
+        Route::get('get/{id}', 'get');
+        Route::put('update/{id}', 'update');
     });
 });

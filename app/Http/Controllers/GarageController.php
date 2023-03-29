@@ -104,6 +104,11 @@ class GarageController extends Controller
                     'address2'
                 ]
             ));
+
+            if ($request->has('service_type_id')) {
+                $garage->garageServiceTypes()->sync($request->service_type_id);
+            }
+
             return ok('Garage Updated Successfully');
         }
         return error('Garage Not Found');

@@ -21,7 +21,7 @@ class ServiceType extends Model
         'deleted_at'
     ];
 
-    public function garage_service_types()
+    public function garageServiceTypes()
     {
         return $this->hasMany(GarageServiceType::class);
     }
@@ -31,7 +31,7 @@ class ServiceType extends Model
         return $this->hasMany(User::class);
     }
 
-    public function user_service_types()
+    public function userServiceTypes()
     {
         return $this->hasMany(UserServiceType::class);
     }

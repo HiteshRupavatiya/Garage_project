@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cars;
+use App\Models\Country;
 use App\Traits\ListingApiTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,9 +21,26 @@ class CarController extends Controller
         $data = $this->filterSearchPagination($cars, $searchableFields);
 
         return ok('Cars Fetched Successfully', [
-            'cars'  => $data['query']->get(),
+            'cars'  => $data['query']->where('owner_id', Auth::user()->id)->get(),
             'count' => $data['count']
         ]);
+    }
+
+    public function searchGarage(Request $request)
+    {
+        $request->validate([
+            'city'         => 'required|exists:cities,id',
+            'state'        => 'required|exists:states,id',
+            'country'      => 'required|exists:countries,id',
+            'service_type' => 'nullable|exists:service_types,id'
+        ]);
+
+        $garages = Country::find($request->country)->states()->cities()->first();
+
+        if ($garages) {
+            return ok(data: $garages);
+        }
+        return error('not found');
     }
 
     public function create(Request $request)
@@ -31,7 +49,6 @@ class CarController extends Controller
             'company_name'       => 'required|string|max:40',
             'model_name'         => 'required|string|max:30',
             'manufacturing_year' => 'required|date|date_format:Y-m-d|before:' . now(),
-            'garage_id'          => 'required|exists:garages,id',
         ]);
 
         $car = Cars::create(
@@ -45,6 +62,17 @@ class CarController extends Controller
                 'owner_id' => Auth::user()->id
             ]
         );
+
+        // $car_service = CarServicing::create(
+        //     $request->only(
+        //         [
+        //             'garage_id',
+        //         ]
+        //     ) + [
+        //         'car_id'     => $car->id,
+        //         'service_id' => $request->service_id
+        //     ]
+        // );
 
         return ok('Car Created Successfully', $car);
     }
