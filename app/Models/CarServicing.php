@@ -22,4 +22,14 @@ class CarServicing extends Model
         'updated_at',
         'deleted_at'
     ];
+
+    public function car()
+    {
+        return $this->belongsTo(Cars::class, 'car_id');
+    }
+
+    public function carServicingJobs()
+    {
+        return $this->hasMany(CarServicingJob::class, 'car_servicing_id');
+    }
 }

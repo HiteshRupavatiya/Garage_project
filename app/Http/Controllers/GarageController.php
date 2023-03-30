@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\MechanicWelcomeEmail;
 use App\Models\User;
 use App\Models\Garage;
 use App\Mail\VerifyEmail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\ListingApiTrait;
+use App\Mail\MechanicWelcomeEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -20,14 +20,38 @@ class GarageController extends Controller
     public function list(Request $request)
     {
         $this->ListingValidation();
-        $garages = Garage::query();
+        $query = Garage::query()->has('garageServiceTypes');
+
+        $request->validate([
+            'service_type' => 'nullable|exists:service_types,id'
+        ]);
+
+        $query = $query->where('country_id', $request->country);
+
+        if ($request->state) {
+            $query->orWhere('state_id', $request->state);
+        }
+
+        if ($request->city) {
+            $query->orWhere('city_id', $request->city);
+        }
+
+        if (isset($request->service_type)) {
+            // $query->whereRelation('garageServiceTypes', 'garage_id', value: $request->service_type);
+            // $query->has('garageServiceTypes', '>=', 1, 'or', function ($q) use ($request) {
+            //     $q->orWhere('service_type_id', $request->service_type);
+            // });
+            $query->orWhereHas('garageServiceTypes', function ($q) use ($request) {
+                $q->where('service_type_id', $request->service_type);
+            });
+        }
 
         $searchableFields = ['garage_name', 'address1', 'address2'];
 
-        $data = $this->filterSearchPagination($garages, $searchableFields);
+        $data = $this->filterSearchPagination($query, $searchableFields);
 
         return ok('Garages Fetched Successfully', [
-            'garages' => $data['query']->with('user')->get(),
+            'garages' => $data['query']->get(),
             'count'   => $data['count']
         ]);
     }

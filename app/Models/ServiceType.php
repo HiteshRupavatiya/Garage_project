@@ -26,6 +26,11 @@ class ServiceType extends Model
         return $this->hasMany(GarageServiceType::class);
     }
 
+    public function garage()
+    {
+        return $this->belongsToMany(Garage::class, 'garage_service_types');
+    }
+
     public function users()
     {
         return $this->hasMany(User::class);

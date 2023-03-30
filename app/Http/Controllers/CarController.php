@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cars;
+use App\Models\City;
 use App\Models\Country;
+use App\Models\Garage;
+use App\Models\ServiceType;
+use App\Models\State;
 use App\Traits\ListingApiTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,18 +33,12 @@ class CarController extends Controller
     public function searchGarage(Request $request)
     {
         $request->validate([
-            'city'         => 'required|exists:cities,id',
-            'state'        => 'required|exists:states,id',
-            'country'      => 'required|exists:countries,id',
             'service_type' => 'nullable|exists:service_types,id'
         ]);
 
-        $garages = Country::find($request->country)->states()->cities()->first();
+        $service_type = ServiceType::with('garage')->where('id', $request->service_type)->get();
 
-        if ($garages) {
-            return ok(data: $garages);
-        }
-        return error('not found');
+        return ok('Garage Fetched Successfully', $service_type);
     }
 
     public function create(Request $request)

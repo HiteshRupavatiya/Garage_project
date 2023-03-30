@@ -33,9 +33,24 @@ class Garage extends Model
         return $this->belongsTo(User::class, 'owner_id');
     }
 
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class, 'state_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
+    }
+
     public function garageServiceTypes()
     {
-        return $this->belongsToMany(GarageServiceType::class, 'garage_service_types', 'garage_id', 'service_type_id');
+        return $this->belongsToMany(ServiceType::class, 'garage_service_types', 'garage_id', 'service_type_id');
     }
 
     public function carServices()

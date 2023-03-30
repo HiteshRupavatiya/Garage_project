@@ -30,4 +30,9 @@ class Country extends Model
     {
         return $this->hasManyThrough(City::class, State::class);
     }
+
+    public function garages()
+    {
+        return $this->hasMany(Garage::class, 'country_id');
+    }
 }

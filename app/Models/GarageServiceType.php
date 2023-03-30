@@ -21,6 +21,11 @@ class GarageServiceType extends Model
 
     public function garage()
     {
-        return $this->belongsToMany(Garage::class, 'garages');
+        return $this->belongsToMany(Garage::class, 'garages', 'garage_id', 'service_type_id');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(ServiceType::class, 'service_type_id');
     }
 }
