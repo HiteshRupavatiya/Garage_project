@@ -27,11 +27,16 @@ Route::controller(AuthController::class)->prefix('user')->group(function () {
     Route::post('register', 'register');
     Route::post('login', 'login');
     Route::get('verify-email/{token}', 'verifyEmail');
+    Route::post('forgot-password', 'forgotPassword');
+    Route::post('reset-password', 'resetPassword');
+});
+
+Route::controller(UserController::class)->middleware(['auth:api'])->prefix('user')->group(function () {
+    Route::post('logout', 'logout');
+    Route::post('change-password', 'changePassword');
 });
 
 Route::middleware(['auth:api', 'admin'])->group(function () {
-    Route::post('user/logout', [UserController::class, 'logout'])->withoutMiddleware(['admin']);
-
     Route::controller(CountryController::class)->prefix('country')->group(function () {
         Route::post('list', 'list');
         Route::post('create', 'create');
@@ -81,10 +86,9 @@ Route::middleware(['auth:api', 'garage_owner'])->group(function () {
     });
 });
 
-Route::middleware(['auth:api', 'customer'])->group(function () {
-    Route::controller(CarController::class)->prefix('car')->group(function () {
+Route::middleware(['auth:api'])->group(function () {
+    Route::controller(CarController::class)->middleware(['customer'])->prefix('car')->group(function () {
         Route::post('list', 'list');
-        Route::post('search-garage', 'searchGarage');
         Route::post('create', 'create');
         Route::get('get/{id}', 'get');
         Route::put('update/{id}', 'update');
@@ -92,9 +96,9 @@ Route::middleware(['auth:api', 'customer'])->group(function () {
         Route::delete('force-delete/{id}', 'forceDelete');
     });
 
-    Route::controller(CarServicingController::class)->prefix('car-service')->group(function () {
+    Route::controller(CarServicingController::class)->middleware(['garage_owner'])->prefix('car-service')->group(function () {
+        Route::post('list', 'list');
         Route::post('create', 'create');
-        Route::get('get/{id}', 'get');
         Route::put('update/{id}', 'update');
     });
 });

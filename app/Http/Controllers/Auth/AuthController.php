@@ -7,6 +7,8 @@ use App\Mail\VerifyEmail;
 use App\Mail\WelcomeEmail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\PasswordReset;
+use App\Mail\ResetPasswordEmail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -111,6 +113,57 @@ class AuthController extends Controller
             return ok('Email Verified Successfully');
         } else {
             return error('Email Already Verified');
+        }
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email|unique:password_resets,email',
+        ]);
+
+        $token = Str::random(64);
+
+        $password_reset = PasswordReset::create(
+            [
+                'email'      => $request->email,
+                'token'      => $token,
+                'created_at' => now(),
+                'expired_at' => now()->addDays(2)
+            ]
+        );
+
+        Mail::to($request->email)->send(new ResetPasswordEmail($password_reset));
+
+        return ok('Password Forgot Mail Sent Successfully');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email'                 => 'required|exists:users,email|exists:password_resets,email',
+            'password'              => 'required|min:8|max:20',
+            'password_confirmation' => 'required|same:password',
+            'token'                 => 'required|exists:password_resets,token',
+        ]);
+
+        $hasData = PasswordReset::where('email', $request->email)->first();
+
+        $hasData->expired_at >= $hasData->created_at;
+
+        if ($hasData) {
+            $user = User::where('email', $request->email)->first();
+            if ($user) {
+                $user->update([
+                    'password' => Hash::make($request->password),
+                ]);
+
+                PasswordReset::where('email', $request->email)->delete();
+
+                return ok('Password Changed Successfully');
+            }
+        } else {
+            return error('Token Has Been expired');
         }
     }
 }

@@ -37,10 +37,6 @@ class GarageController extends Controller
         }
 
         if (isset($request->service_type)) {
-            // $query->whereRelation('garageServiceTypes', 'garage_id', value: $request->service_type);
-            // $query->has('garageServiceTypes', '>=', 1, 'or', function ($q) use ($request) {
-            //     $q->orWhere('service_type_id', $request->service_type);
-            // });
             $query->orWhereHas('garageServiceTypes', function ($q) use ($request) {
                 $q->where('service_type_id', $request->service_type);
             });
