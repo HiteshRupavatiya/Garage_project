@@ -14,7 +14,8 @@ class CarServicing extends Model
     protected $fillable = [
         'garage_id',
         'car_id',
-        'service_id'
+        'service_id',
+        'status'
     ];
 
     protected $hidden = [
@@ -31,5 +32,15 @@ class CarServicing extends Model
     public function carServicingJobs()
     {
         return $this->hasMany(CarServicingJob::class, 'car_servicing_id');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(ServiceType::class, 'service_id', 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsToMany(User::class, 'car_servicings');
     }
 }

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CarServiceRequestMail;
 use App\Models\Cars;
-use App\Models\CarServicing;
 use App\Models\Garage;
-use App\Traits\ListingApiTrait;
+use App\Models\CarServicing;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Traits\ListingApiTrait;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class CarServicingController extends Controller
 {
@@ -55,19 +58,23 @@ class CarServicingController extends Controller
             'car_id'       => 'required|exists:cars,id',
             'service_type' => 'required|exists:service_types,id'
         ]);
+        $car = Cars::with('user')->where('owner_id', Auth::user()->id)->find($request->car_id);
+        $query = Garage::query();
+        $garage_services = $query->where('id', $request->garage_id)->get()->pluck('garageServiceTypes');
 
-        $car_id = Cars::where('owner_id', Auth::user()->id)->find($request->car_id);
+        foreach ($garage_services as $garage_service) {
+            foreach ($garage_service as $service) {
+                $services[] = $service->id;
+            }
+        }
 
-        if ($car_id) {
-            // return $garage_service_type[0]->user->email;
+        if ($car && in_array($request->service_type, $services)) {
+            $car_servicing_exists = CarServicing::where([['car_id', $request->car_id], ['service_id', $request->service_type]])->get();
 
-            $car_servicing = Garage::where('id', $request->garage_id)->with('garageServiceTypes')->get()->pluck('garageServiceTypes');
-
-            return $car_servicing[0];
-            // return $car_servicing;
-
-            if ($car_servicing) {
-                $car_servicing1 = CarServicing::create(
+            if (count($car_servicing_exists) > 0) {
+                return error('Car Service Already Exists');
+            } else {
+                $car_servicing = CarServicing::create(
                     $request->only(
                         [
                             'garage_id',
@@ -77,13 +84,52 @@ class CarServicingController extends Controller
                         'service_id' => $request->service_type
                     ]
                 );
-                return ok('Car Service Added Successfully', $car_servicing1);
+
+                $car['service_type'] = $car_servicing->service->service_name;
+                $query = $query->with('user')->where('id', $request->garage_id)->first();
+                $owner = $query->user;
+
+                Mail::to($owner->email)->send(new CarServiceRequestMail($owner, $car));
+                return ok('Car Service Added Successfully', $car_servicing);
             }
         }
-        return error('Car Service Already Exists');
+        return error('Garage Has No Available Requested Service');
     }
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'status' => 'string|in:In-Progress,Delay,Complete,Delivered',
+        ]);
+
+        $car_servicing = CarServicing::where([['id', $id], ['garage_id', Auth::user()->garage->id]])->first();
+        if ($car_servicing) {
+            if (isset(request()->status)) {
+                $car_servicing->update($request->only('status'));
+                return ok('Car Service Updated Successfully');
+            }
+            return ok('Car Service Updated Successfully');
+        }
+        return error('Car Service Not Found');
+    }
+
+    public function delete($id)
+    {
+        $car_servicing = CarServicing::where([['id', $id], ['garage_id', Auth::user()->garage->id]])->first();
+        if ($car_servicing) {
+            $car_servicing->delete();
+            return ok('Car Service Deleted Successfully');
+        }
+        return error('Car Service Not Found');
+    }
+
+    public function forceDelete($id)
+    {
+        $car_servicing = CarServicing::onlyTrashed()->where([['id', $id], ['garage_id', Auth::user()->garage->id]])->first();
+        if ($car_servicing) {
+            $car_servicing->forceDelete();
+            return ok('Car Service Force Deleted Successfully');
+        }
+        return error('Car Service Not Found');
     }
 }

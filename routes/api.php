@@ -98,7 +98,9 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::controller(CarServicingController::class)->middleware(['garage_owner'])->prefix('car-service')->group(function () {
         Route::post('list', 'list');
-        Route::post('create', 'create');
+        Route::post('create', 'create')->withoutMiddleware(['garage_owner']);
         Route::put('update/{id}', 'update');
+        Route::delete('delete/{id}', 'delete');
+        Route::delete('force-delete/{id}', 'forceDelete');
     });
 });

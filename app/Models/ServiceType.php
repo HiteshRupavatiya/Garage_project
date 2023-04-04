@@ -40,4 +40,9 @@ class ServiceType extends Model
     {
         return $this->hasMany(UserServiceType::class);
     }
+
+    public function carService()
+    {
+        return $this->hasMany(CarServicing::class, 'service_id');
+    }
 }
