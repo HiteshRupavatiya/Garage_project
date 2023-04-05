@@ -63,7 +63,7 @@ class User extends Authenticatable
 
     public function userServiceTypes()
     {
-        return $this->belongsToMany(UserServiceType::class, 'user_service_types', 'user_id', 'service_type_id');
+        return $this->hasOne(UserServiceType::class);
     }
 
     public function cars()

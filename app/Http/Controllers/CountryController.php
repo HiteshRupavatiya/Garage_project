@@ -13,14 +13,14 @@ class CountryController extends Controller
     public function list(Request $request)
     {
         $this->ListingValidation();
-        $country = Country::query();
+        $country = Country::query()->with('states');
 
         $searchableFields = ['country_name'];
 
         $data = $this->filterSearchPagination($country, $searchableFields);
 
-        return ok('Countries Fetched Successfully', [
-            'countries' => $data['query']->with('states')->get(),
+        return ok('Countries fetched successfully', [
+            'countries' => $data['query']->get(),
             'count'     => $data['count']
         ]);
     }
@@ -37,16 +37,16 @@ class CountryController extends Controller
             ]
         ));
 
-        return ok('Country Created Successfully', $country);
+        return ok('Country created successfully', $country);
     }
 
     public function get($id)
     {
         $country = Country::find($id);
         if ($country) {
-            return ok('Country Fetched Successfully', $country);
+            return ok('Country fetched successfully', $country);
         }
-        return error('Country Not Found');
+        return error('Country not found', type: 'notfound');
     }
 
     public function update(Request $request, $id)
@@ -66,10 +66,10 @@ class CountryController extends Controller
                 )
             );
 
-            return ok('Country Updated Successfully');
+            return ok('Country updated successfully');
         }
 
-        return error('Country Not Found');
+        return error('Country not found', type: 'notfound');
     }
 
     public function delete($id)
@@ -77,9 +77,9 @@ class CountryController extends Controller
         $country = Country::find($id);
         if ($country) {
             $country->delete();
-            return ok('Country Deleted Successfully');
+            return ok('Country deleted Successfully');
         }
-        return error('Country Not Found');
+        return error('Country not found', type: 'notfound');
     }
 
     public function forceDelete($id)
@@ -87,8 +87,8 @@ class CountryController extends Controller
         $country = Country::onlyTrashed()->find($id);
         if ($country) {
             $country->forceDelete();
-            return ok('Country Forced Deleted Successfully');
+            return ok('Country forced deleted successfully');
         }
-        return error('Country Not Found');
+        return error('Country not found', type: 'notfound');
     }
 }

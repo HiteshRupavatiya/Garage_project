@@ -13,14 +13,14 @@ class CityController extends Controller
     public function list(Request $request)
     {
         $this->ListingValidation();
-        $city = City::query();
+        $city = City::query()->with('state');
 
         $searchableFields = ['city_name'];
 
         $data = $this->filterSearchPagination($city, $searchableFields);
 
-        return ok('Cities Fetched Successfully', [
-            'cities' => $data['query']->with('state')->get(),
+        return ok('Cities fetched successfully', [
+            'cities' => $data['query']->get(),
             'count'  => $data['count']
         ]);
     }
@@ -39,16 +39,16 @@ class CityController extends Controller
             ]
         ));
 
-        return ok('City Created Successfully', $city);
+        return ok('City created successfully', $city);
     }
 
     public function get($id)
     {
         $city = City::find($id);
         if ($city) {
-            return ok('City Fetched Successfully', $city);
+            return ok('City fetched successfully', $city);
         }
-        return error('City Not Found');
+        return error('City not found', type: 'notfound');
     }
 
     public function update(Request $request, $id)
@@ -68,10 +68,10 @@ class CityController extends Controller
                 )
             );
 
-            return ok('City Updated Successfully');
+            return ok('City updated successfully');
         }
 
-        return error('City Not Found');
+        return error('City not found', type: 'notfound');
     }
 
     public function delete($id)
@@ -79,9 +79,9 @@ class CityController extends Controller
         $city = City::find($id);
         if ($city) {
             $city->delete();
-            return ok('City Deleted Successfully');
+            return ok('City deleted successfully');
         }
-        return error('City Not Found');
+        return error('City not found', type: 'notfound');
     }
 
     public function forceDelete($id)
@@ -89,8 +89,8 @@ class CityController extends Controller
         $city = City::onlyTrashed()->find($id);
         if ($city) {
             $city->forceDelete();
-            return ok('City Forced Deleted Successfully');
+            return ok('City forced deleted successfully');
         }
-        return error('City Not Found');
+        return error('City not found', type: 'notfound');
     }
 }

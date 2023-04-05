@@ -12,7 +12,7 @@ class UserController extends Controller
     {
         $token = $request->user()->token();
         $token->revoke();
-        return ok('You Logged Out Successfully');
+        return ok('You logged out successfully');
     }
 
     public function changePassword(Request $request)
@@ -30,6 +30,6 @@ class UserController extends Controller
             ]
         );
 
-        return ok('Password Changed Successfully');
+        return ok('Password changed successfully');
     }
 }

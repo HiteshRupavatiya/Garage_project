@@ -18,37 +18,17 @@ class CarServicingController extends Controller
 
     public function list(Request $request)
     {
-        $request->validate([
-            'country'      => 'required|exists:countries,id',
-            'state'        => 'nullable|exists:states,id',
-            'city'         => 'nullable|exists:cities,id',
-            'service_type' => 'nullable|exists:service_types,id'
+        $this->ListingValidation();
+        $query = CarServicing::query()->where('garage_id', Auth::user()->garage->id);
+
+        $searchableFields = ['status'];
+
+        $data = $this->filterSearchPagination($query, $searchableFields);
+
+        return ok('Cars servicing list fetched successfully', [
+            'car_servicing'  => $data['query']->get(),
+            'count'          => $data['count']
         ]);
-
-        $query = Garage::query()->has('garageServiceTypes');
-
-        $query = $query->where('country_id', $request->country);
-
-        if ($request->state) {
-            $query->orWhere('state_id', $request->state);
-        }
-
-        if ($request->city) {
-            $query->orWhere('city_id', $request->city);
-        }
-
-        if (isset($request->service_type)) {
-            $query->orWhereHas('garageServiceTypes', function ($q) use ($request) {
-                $q->where('service_type_id', $request->service_type);
-            });
-        }
-
-        $garages = $query->orderBy('id')->get();
-
-        if (count($garages) > 0) {
-            return ok('Garages Fetched Successfully', $garages);
-        }
-        return error('Garages Not Found');
     }
 
     public function create(Request $request)
@@ -58,6 +38,7 @@ class CarServicingController extends Controller
             'car_id'       => 'required|exists:cars,id',
             'service_type' => 'required|exists:service_types,id'
         ]);
+
         $car = Cars::with('user')->where('owner_id', Auth::user()->id)->find($request->car_id);
         $query = Garage::query();
         $garage_services = $query->where('id', $request->garage_id)->get()->pluck('garageServiceTypes');
@@ -72,7 +53,7 @@ class CarServicingController extends Controller
             $car_servicing_exists = CarServicing::where([['car_id', $request->car_id], ['service_id', $request->service_type]])->get();
 
             if (count($car_servicing_exists) > 0) {
-                return error('Car Service Already Exists');
+                return error('Car service already exists', type: 'validation');
             } else {
                 $car_servicing = CarServicing::create(
                     $request->only(
@@ -90,10 +71,10 @@ class CarServicingController extends Controller
                 $owner = $query->user;
 
                 Mail::to($owner->email)->send(new CarServiceRequestMail($owner, $car));
-                return ok('Car Service Added Successfully', $car_servicing);
+                return ok('Car service added successfully', $car_servicing);
             }
         }
-        return error('Garage Has No Available Requested Service');
+        return error('Garage has no available requested service', type: 'notfound');
     }
 
     public function update(Request $request, $id)
@@ -106,11 +87,11 @@ class CarServicingController extends Controller
         if ($car_servicing) {
             if (isset(request()->status)) {
                 $car_servicing->update($request->only('status'));
-                return ok('Car Service Updated Successfully');
+                return ok('Car service updated successfully');
             }
-            return ok('Car Service Updated Successfully');
+            return ok('Car service updated successfully');
         }
-        return error('Car Service Not Found');
+        return error('Car Service Not Found', type: 'notfound');
     }
 
     public function delete($id)
@@ -118,9 +99,9 @@ class CarServicingController extends Controller
         $car_servicing = CarServicing::where([['id', $id], ['garage_id', Auth::user()->garage->id]])->first();
         if ($car_servicing) {
             $car_servicing->delete();
-            return ok('Car Service Deleted Successfully');
+            return ok('Car service deleted successfully');
         }
-        return error('Car Service Not Found');
+        return error('Car service not found', type: 'notfound');
     }
 
     public function forceDelete($id)
@@ -128,8 +109,8 @@ class CarServicingController extends Controller
         $car_servicing = CarServicing::onlyTrashed()->where([['id', $id], ['garage_id', Auth::user()->garage->id]])->first();
         if ($car_servicing) {
             $car_servicing->forceDelete();
-            return ok('Car Service Force Deleted Successfully');
+            return ok('Car service force deleted successfully');
         }
-        return error('Car Service Not Found');
+        return error('Car service not found', type: 'notfound');
     }
 }

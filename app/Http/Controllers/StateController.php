@@ -13,14 +13,14 @@ class StateController extends Controller
     public function list(Request $request)
     {
         $this->ListingValidation();
-        $state = State::query();
+        $state = State::query()->with('country');
 
         $searchableFields = ['state_name'];
 
         $data = $this->filterSearchPagination($state, $searchableFields);
 
-        return ok('States Fetched Successfully', [
-            'states' => $data['query']->with('country')->get(),
+        return ok('States fetched successfully', [
+            'states' => $data['query']->get(),
             'count'  => $data['count']
         ]);
     }
@@ -39,16 +39,16 @@ class StateController extends Controller
             ]
         ));
 
-        return ok('State Created Successfully', $state);
+        return ok('State created successfully', $state);
     }
 
     public function get($id)
     {
         $state = State::find($id);
         if ($state) {
-            return ok('State Fetched Successfully', $state);
+            return ok('State fetched successfully', $state);
         }
-        return error('State Not Found');
+        return error('State not found', type: 'notfound');
     }
 
     public function update(Request $request, $id)
@@ -68,10 +68,10 @@ class StateController extends Controller
                 )
             );
 
-            return ok('State Updated Successfully');
+            return ok('State updated successfully');
         }
 
-        return error('State Not Found');
+        return error('State not found', type: 'notfound');
     }
 
     public function delete($id)
@@ -79,9 +79,9 @@ class StateController extends Controller
         $state = State::find($id);
         if ($state) {
             $state->delete();
-            return ok('State Deleted Successfully');
+            return ok('State deleted successfully');
         }
-        return error('State Not Found');
+        return error('State not found', type: 'notfound');
     }
 
     public function forceDelete($id)
@@ -89,8 +89,8 @@ class StateController extends Controller
         $state = State::onlyTrashed()->find($id);
         if ($state) {
             $state->forceDelete();
-            return ok('State Forced Deleted Successfully');
+            return ok('State forced deleted successfully');
         }
-        return error('State Not Found');
+        return error('State not found', type: 'notfound');
     }
 }

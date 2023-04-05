@@ -3,12 +3,16 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\CarServicingController;
+use App\Http\Controllers\CarServicingJobController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\GarageController;
 use App\Http\Controllers\ServiceTypeController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\Customer;
+use App\Http\Middleware\GarageOwner;
+use App\Http\Middleware\Mechanic;
 use App\Models\CarServicing;
 use Illuminate\Support\Facades\Route;
 
@@ -74,8 +78,8 @@ Route::middleware(['auth:api', 'admin'])->group(function () {
     });
 });
 
-Route::middleware(['auth:api', 'garage_owner'])->group(function () {
-    Route::controller(GarageController::class)->prefix('garage')->group(function () {
+Route::middleware(['auth:api'])->group(function () {
+    Route::controller(GarageController::class)->middleware(GarageOwner::class)->prefix('garage')->group(function () {
         Route::post('list', 'list')->withoutMiddleware(['garage_owner']);
         Route::post('create', 'create');
         Route::post('add-mechanic', 'addMechanic');
@@ -84,10 +88,8 @@ Route::middleware(['auth:api', 'garage_owner'])->group(function () {
         Route::delete('delete/{id}', 'delete');
         Route::delete('force-delete/{id}', 'forceDelete');
     });
-});
 
-Route::middleware(['auth:api'])->group(function () {
-    Route::controller(CarController::class)->middleware(['customer'])->prefix('car')->group(function () {
+    Route::controller(CarController::class)->middleware(Customer::class)->prefix('car')->group(function () {
         Route::post('list', 'list');
         Route::post('create', 'create');
         Route::get('get/{id}', 'get');
@@ -96,11 +98,16 @@ Route::middleware(['auth:api'])->group(function () {
         Route::delete('force-delete/{id}', 'forceDelete');
     });
 
-    Route::controller(CarServicingController::class)->middleware(['garage_owner'])->prefix('car-service')->group(function () {
+    Route::controller(CarServicingController::class)->middleware(GarageOwner::class)->prefix('car-service')->group(function () {
         Route::post('list', 'list');
-        Route::post('create', 'create')->withoutMiddleware(['garage_owner']);
+        Route::post('create', 'create')->middleware(Customer::class)->withoutMiddleware([GarageOwner::class]);
         Route::put('update/{id}', 'update');
         Route::delete('delete/{id}', 'delete');
         Route::delete('force-delete/{id}', 'forceDelete');
+    });
+
+    Route::controller(CarServicingJobController::class)->middleware(GarageOwner::class)->prefix('car-service-job')->group(function () {
+        Route::post('create', 'create');
+        Route::put('update/{id}', 'update')->middleware(Mechanic::class)->withoutMiddleware([GarageOwner::class]);
     });
 });

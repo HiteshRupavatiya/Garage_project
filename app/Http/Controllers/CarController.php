@@ -14,13 +14,13 @@ class CarController extends Controller
     public function list(Request $request)
     {
         $this->ListingValidation();
-        $cars = Cars::query();
-        $cars->where('owner_id', Auth::user()->id);
+        $query = Cars::query()->with('carServices')->where('owner_id', Auth::user()->id);
 
-        $searchableFields = ['company_name', 'model_name', 'manufacturing_year'];
-        $data = $this->filterSearchPagination($cars, $searchableFields);
+        $searchableFields = ['company_name', 'model_name'];
 
-        return ok('Cars Fetched Successfully', [
+        $data = $this->filterSearchPagination($query, $searchableFields);
+
+        return ok('Cars fetched successfully', [
             'cars'  => $data['query']->get(),
             'count' => $data['count']
         ]);
@@ -46,16 +46,16 @@ class CarController extends Controller
             ]
         );
 
-        return ok('Car Created Successfully', $car);
+        return ok('Car created successfully', $car);
     }
 
     public function get($id)
     {
         $car = Cars::where('owner_id', Auth::user()->id)->find($id);
         if ($car) {
-            return ok('Car Fetched Successfully', $car);
+            return ok('Car fetched successfully', $car);
         }
-        return error('Car Not Found');
+        return error('Car not found', type: 'notfound');
     }
 
     public function update(Request $request, $id)
@@ -77,9 +77,9 @@ class CarController extends Controller
                 ]
             ));
 
-            return ok('Car Updated Successfully');
+            return ok('Car updated successfully');
         }
-        return error('Car Not Found');
+        return error('Car not found', type: 'notfound');
     }
 
     public function delete($id)
@@ -87,9 +87,9 @@ class CarController extends Controller
         $car = Cars::where('owner_id', Auth::user()->id)->find($id);
         if ($car) {
             $car->delete();
-            return ok('Car Deleted Successfully');
+            return ok('Car deleted successfully');
         }
-        return error('Car Not Found');
+        return error('Car not found', type: 'notfound');
     }
 
     public function forceDelete($id)
@@ -97,8 +97,8 @@ class CarController extends Controller
         $car = Cars::onlyTrashed()->where('owner_id', Auth::user()->id)->find($id);
         if ($car) {
             $car->forceDelete();
-            return ok('Car Forced Deleted Successfully');
+            return ok('Car forced deleted successfully');
         }
-        return error('Car Not Found');
+        return error('Car not found', type: 'notfound');
     }
 }

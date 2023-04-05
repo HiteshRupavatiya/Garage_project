@@ -46,7 +46,7 @@ class GarageController extends Controller
 
         $data = $this->filterSearchPagination($query, $searchableFields);
 
-        return ok('Garages Fetched Successfully', [
+        return ok('Garages fetched successfully', [
             'garages' => $data['query']->get(),
             'count'   => $data['count']
         ]);
@@ -93,16 +93,16 @@ class GarageController extends Controller
             ]);
         }
 
-        return ok('Garage Created Successfully', $garage);
+        return ok('Garage created successfully', $garage);
     }
 
     public function get($id)
     {
         $garage = Garage::where('owner_id', Auth::user()->id)->find($id);
         if ($garage) {
-            return ok('Garage Fetched Successfully', $garage);
+            return ok('Garage fetched successfully', $garage);
         }
-        return error('Garage Not Found');
+        return error('Garage not found', type: 'notfound');
     }
 
     public function update(Request $request, $id)
@@ -129,9 +129,9 @@ class GarageController extends Controller
                 $garage->garageServiceTypes()->sync($request->service_type_id);
             }
 
-            return ok('Garage Updated Successfully');
+            return ok('Garage updated successfully');
         }
-        return error('Garage Not Found');
+        return error('Garage not found', type: 'notfound');
     }
 
     public function delete($id)
@@ -139,9 +139,9 @@ class GarageController extends Controller
         $garage = Garage::where('owner_id', Auth::user()->id)->find($id);
         if ($garage) {
             $garage->delete();
-            return ok('Garage Deleted Successfully');
+            return ok('Garage deleted successfully');
         }
-        return error('Garage Not Found');
+        return error('Garage not found', type: 'notfound');
     }
 
     public function forceDelete($id)
@@ -150,9 +150,9 @@ class GarageController extends Controller
         if ($garage) {
             $garage->forceDelete();
             $garage->garageServiceTypes()->detach();
-            return ok('Garage Force Deleted Successfully');
+            return ok('Garage force deleted successfully');
         }
-        return error('Garage Not Found');
+        return error('Garage not found', type: 'notfound');
     }
 
     public function addMechanic(Request $request)
@@ -219,6 +219,6 @@ class GarageController extends Controller
 
         $token = $user->createToken('API Token')->accessToken;
 
-        return ok('Mechanic Registered Successfully', $user);
+        return ok('Mechanic added successfully', $user);
     }
 }

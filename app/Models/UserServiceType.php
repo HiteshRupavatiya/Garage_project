@@ -11,7 +11,7 @@ class UserServiceType extends Model
 
     public function user()
     {
-        return $this->belongsToMany(User::class, 'users', 'user_id', 'service_type_id');
+        return $this->belongsTo(User::class);
     }
 
     public function service()

@@ -31,6 +31,6 @@ class Cars extends Model
 
     public function carServices()
     {
-        return $this->belongsToMany(CarServicing::class, 'car_servicings', 'car_id', 'garage_id');
+        return $this->hasMany(CarServicing::class, 'car_id', 'id');
     }
 }

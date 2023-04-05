@@ -19,7 +19,7 @@ class ServiceTypeController extends Controller
 
         $data = $this->filterSearchPagination($state, $searchableFields);
 
-        return ok('Service Types Fetched Successfully', [
+        return ok('Service types fetched successfully', [
             'service_types' => $data['query']->get(),
             'count'         => $data['count']
         ]);
@@ -37,16 +37,16 @@ class ServiceTypeController extends Controller
             ]
         ));
 
-        return ok('Service Type Created Successfully', $serviceType);
+        return ok('Service type created successfully', $serviceType);
     }
 
     public function get($id)
     {
         $serviceType = ServiceType::find($id);
         if ($serviceType) {
-            return ok('Service Type Fetched Successfully', $serviceType);
+            return ok('Service type fetched successfully', $serviceType);
         }
-        return error('Service Type Not Found');
+        return error('Service type not found', type: 'notfound');
     }
 
     public function update(Request $request, $id)
@@ -65,9 +65,9 @@ class ServiceTypeController extends Controller
                 )
             );
 
-            return ok('Service Type Updated Successfully');
+            return ok('Service type updated successfully');
         }
-        return error('Service Type Not Found');
+        return error('Service type not found', type: 'notfound');
     }
 
     public function delete($id)
@@ -75,9 +75,9 @@ class ServiceTypeController extends Controller
         $serviceType = ServiceType::find($id);
         if ($serviceType) {
             $serviceType->delete();
-            return ok('Service Type Deleted Successfully');
+            return ok('Service type deleted successfully');
         }
-        return error('Service Type Not Found');
+        return error('Service type not found', type: 'notfound');
     }
 
     public function forceDelete($id)
@@ -85,8 +85,8 @@ class ServiceTypeController extends Controller
         $serviceType = ServiceType::onlyTrashed()->find($id);
         if ($serviceType) {
             $serviceType->forceDelete();
-            return ok('Service Type Forced Deleted Successfully');
+            return ok('Service type forced deleted successfully');
         }
-        return error('Service Type Not Found');
+        return error('Service type not found', type: 'notfound');
     }
 }
