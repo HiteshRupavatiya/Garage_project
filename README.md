@@ -64,3 +64,14 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Project title
+The Garage Management Tool
+
+It is a management tool for manage garage owners garage and its machanics, customer can sign-up to the dedicated portal, and the garage mechanic also adds customer details and customer cars details, mechanic, customer also sign-up them in the system, garage owner can have only one garage with multiple service types, and customer can search near by garage with filter like country, state, city and also service types that the garage can be provided, customer can also add multiple cars and manage them for appply to service on which available garage, garage owner can accept and assign the car service job to specific service Machanic of the garage.
+
+Customers can add multiple cars to the services and access car serviciing history like which machanic serviced the car and also the car service job status, Mechanic can only update car servicing job status like in progress, complete.
+
+Garage owner can update car service status like delay, complete, delivered.
+
+## Project installation and setup

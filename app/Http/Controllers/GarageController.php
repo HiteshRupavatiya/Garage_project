@@ -17,6 +17,13 @@ class GarageController extends Controller
 {
     use ListingApiTrait;
 
+    /**
+     * Garage searching list filter for search near by garage with service type,
+     * country, state, city for customer with pagination and sorting.
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function list(Request $request)
     {
         $this->ListingValidation();
@@ -52,6 +59,12 @@ class GarageController extends Controller
         ]);
     }
 
+    /**
+     * Add garage for login garage owner with multiple garage service types.
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function create(Request $request)
     {
         $request->validate([
@@ -96,6 +109,12 @@ class GarageController extends Controller
         return ok('Garage created successfully', $garage);
     }
 
+    /**
+     * Get specified detail of garage for logged in garage owner.
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function get($id)
     {
         $garage = Garage::where('owner_id', Auth::user()->id)->find($id);
@@ -105,6 +124,13 @@ class GarageController extends Controller
         return error('Garage not found', type: 'notfound');
     }
 
+    /**
+     * Update specified garage details with garage service types for logged in garage owner.
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return json response
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -134,6 +160,12 @@ class GarageController extends Controller
         return error('Garage not found', type: 'notfound');
     }
 
+    /**
+     * Soft delete specified garage of logged in garage owner.
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function delete($id)
     {
         $garage = Garage::where('owner_id', Auth::user()->id)->find($id);
@@ -144,6 +176,12 @@ class GarageController extends Controller
         return error('Garage not found', type: 'notfound');
     }
 
+    /**
+     * Force delete specified garage with garage service types of logged in garage owner.
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function forceDelete($id)
     {
         $garage = Garage::onlyTrashed()->where('owner_id', Auth::user()->id)->find($id);
@@ -155,6 +193,13 @@ class GarageController extends Controller
         return error('Garage not found', type: 'notfound');
     }
 
+    /**
+     * Logged in garage owner add multiple mechanic to their garage and send welcome email to mechanic,
+     * with their login credintials.
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function addMechanic(Request $request)
     {
         $request->validate([

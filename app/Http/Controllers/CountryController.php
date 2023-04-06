@@ -10,6 +10,12 @@ class CountryController extends Controller
 {
     use ListingApiTrait;
 
+    /**
+     * Country listing with their states detail and pagination searching and sorting
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function list(Request $request)
     {
         $this->ListingValidation();
@@ -25,6 +31,12 @@ class CountryController extends Controller
         ]);
     }
 
+    /**
+     * Add country details
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function create(Request $request)
     {
         $request->validate([
@@ -40,6 +52,12 @@ class CountryController extends Controller
         return ok('Country created successfully', $country);
     }
 
+    /**
+     * Get specified detail of country
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function get($id)
     {
         $country = Country::find($id);
@@ -49,6 +67,13 @@ class CountryController extends Controller
         return error('Country not found', type: 'notfound');
     }
 
+    /**
+     * Update specified country detail 
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return json response
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -72,6 +97,12 @@ class CountryController extends Controller
         return error('Country not found', type: 'notfound');
     }
 
+    /**
+     * Soft delete specified country
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function delete($id)
     {
         $country = Country::find($id);
@@ -82,6 +113,12 @@ class CountryController extends Controller
         return error('Country not found', type: 'notfound');
     }
 
+    /**
+     * Force delete specified country
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function forceDelete($id)
     {
         $country = Country::onlyTrashed()->find($id);

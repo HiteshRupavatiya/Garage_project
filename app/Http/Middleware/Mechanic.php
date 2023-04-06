@@ -19,7 +19,7 @@ class Mechanic
         if (auth()->user()->type == 'Mechanic') {
             return $next($request);
         } else {
-            return error('You have not access rights');
+            return error('You have not access rights', type: 'unauthenticated');
         }
     }
 }

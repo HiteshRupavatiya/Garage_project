@@ -11,10 +11,13 @@ class CarController extends Controller
 {
     use ListingApiTrait;
 
+    /**
+     * Customer cars listing with applied service list, service job status
+     */
     public function list(Request $request)
     {
         $this->ListingValidation();
-        $query = Cars::query()->with('carServices')->where('owner_id', Auth::user()->id);
+        $query = Cars::query()->with('carServices', 'carServicingJobs')->where('owner_id', Auth::user()->id);
 
         $searchableFields = ['company_name', 'model_name'];
 
@@ -26,6 +29,9 @@ class CarController extends Controller
         ]);
     }
 
+    /**
+     * Customer add multiple cars to their profile
+     */
     public function create(Request $request)
     {
         $request->validate([
@@ -49,6 +55,9 @@ class CarController extends Controller
         return ok('Car created successfully', $car);
     }
 
+    /**
+     * Customer get specified car details
+     */
     public function get($id)
     {
         $car = Cars::where('owner_id', Auth::user()->id)->find($id);
@@ -58,6 +67,9 @@ class CarController extends Controller
         return error('Car not found', type: 'notfound');
     }
 
+    /**
+     * Customer can update only specified car details that can be added to their profile
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -82,6 +94,9 @@ class CarController extends Controller
         return error('Car not found', type: 'notfound');
     }
 
+    /**
+     * Customer can soft deletes the specified car
+     */
     public function delete($id)
     {
         $car = Cars::where('owner_id', Auth::user()->id)->find($id);
@@ -92,6 +107,9 @@ class CarController extends Controller
         return error('Car not found', type: 'notfound');
     }
 
+    /**
+     * Customer can force delete the specified car
+     */
     public function forceDelete($id)
     {
         $car = Cars::onlyTrashed()->where('owner_id', Auth::user()->id)->find($id);

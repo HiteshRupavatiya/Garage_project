@@ -19,7 +19,7 @@ class Customer
         if (auth()->user()->type == 'Customer') {
             return $next($request);
         } else {
-            return error('You have not access rights');
+            return error('You have not access rights', type: 'unauthenticated');
         }
     }
 }

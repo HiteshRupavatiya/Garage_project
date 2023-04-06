@@ -10,6 +10,12 @@ class CityController extends Controller
 {
     use ListingApiTrait;
 
+    /**
+     * Cities listing with their state detail and pagination searching and sorting.
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function list(Request $request)
     {
         $this->ListingValidation();
@@ -25,6 +31,12 @@ class CityController extends Controller
         ]);
     }
 
+    /**
+     * Add city details
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function create(Request $request)
     {
         $request->validate([
@@ -42,6 +54,12 @@ class CityController extends Controller
         return ok('City created successfully', $city);
     }
 
+    /**
+     * Get specified detail of city
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function get($id)
     {
         $city = City::find($id);
@@ -51,6 +69,13 @@ class CityController extends Controller
         return error('City not found', type: 'notfound');
     }
 
+    /**
+     * Update specified city details
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return json response
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -74,6 +99,12 @@ class CityController extends Controller
         return error('City not found', type: 'notfound');
     }
 
+    /**
+     * Soft delete specified city
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function delete($id)
     {
         $city = City::find($id);
@@ -84,6 +115,12 @@ class CityController extends Controller
         return error('City not found', type: 'notfound');
     }
 
+    /**
+     * Force delete specified city
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function forceDelete($id)
     {
         $city = City::onlyTrashed()->find($id);

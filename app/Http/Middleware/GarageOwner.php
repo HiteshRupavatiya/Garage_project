@@ -20,7 +20,7 @@ class GarageOwner
         if (Auth::user()->type == 'Garage Owner') {
             return $next($request);
         } else {
-            return error('You have not access rights');
+            return error('You have not access rights', type: 'unauthenticated');
         }
     }
 }

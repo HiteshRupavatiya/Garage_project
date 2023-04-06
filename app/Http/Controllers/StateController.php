@@ -10,6 +10,12 @@ class StateController extends Controller
 {
     use ListingApiTrait;
 
+    /**
+     * States listing with their country detail and pagination searching and sorting.
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function list(Request $request)
     {
         $this->ListingValidation();
@@ -25,6 +31,12 @@ class StateController extends Controller
         ]);
     }
 
+    /**
+     * Add state details
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function create(Request $request)
     {
         $request->validate([
@@ -42,6 +54,12 @@ class StateController extends Controller
         return ok('State created successfully', $state);
     }
 
+    /**
+     * Get specified details of state
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function get($id)
     {
         $state = State::find($id);
@@ -51,6 +69,13 @@ class StateController extends Controller
         return error('State not found', type: 'notfound');
     }
 
+    /**
+     * Update specified state details
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return json response
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -74,6 +99,12 @@ class StateController extends Controller
         return error('State not found', type: 'notfound');
     }
 
+    /**
+     * Soft delete specified state
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function delete($id)
     {
         $state = State::find($id);
@@ -84,6 +115,12 @@ class StateController extends Controller
         return error('State not found', type: 'notfound');
     }
 
+    /**
+     * Force delete specified state
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function forceDelete($id)
     {
         $state = State::onlyTrashed()->find($id);

@@ -10,6 +10,12 @@ class ServiceTypeController extends Controller
 {
     use ListingApiTrait;
 
+    /**
+     * Service types listing details with pagination searching and sorting.
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function list(Request $request)
     {
         $this->ListingValidation();
@@ -25,6 +31,12 @@ class ServiceTypeController extends Controller
         ]);
     }
 
+    /**
+     * Add service type details
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function create(Request $request)
     {
         $request->validate([
@@ -40,6 +52,12 @@ class ServiceTypeController extends Controller
         return ok('Service type created successfully', $serviceType);
     }
 
+    /**
+     * Get specified detail of service type
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function get($id)
     {
         $serviceType = ServiceType::find($id);
@@ -49,6 +67,13 @@ class ServiceTypeController extends Controller
         return error('Service type not found', type: 'notfound');
     }
 
+    /**
+     * Update specified service type details
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return json response
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -70,6 +95,12 @@ class ServiceTypeController extends Controller
         return error('Service type not found', type: 'notfound');
     }
 
+    /**
+     * Soft delete specified service type
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function delete($id)
     {
         $serviceType = ServiceType::find($id);
@@ -80,6 +111,12 @@ class ServiceTypeController extends Controller
         return error('Service type not found', type: 'notfound');
     }
 
+    /**
+     * Force delete specified service type
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function forceDelete($id)
     {
         $serviceType = ServiceType::onlyTrashed()->find($id);

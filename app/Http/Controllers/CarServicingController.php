@@ -16,6 +16,12 @@ class CarServicingController extends Controller
 {
     use ListingApiTrait;
 
+    /**
+     * Get listing of customer car service requests for specific logged in garage owner with searching and pagination.
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function list(Request $request)
     {
         $this->ListingValidation();
@@ -31,6 +37,12 @@ class CarServicingController extends Controller
         ]);
     }
 
+    /**
+     * Customer select garage, car, service type, and after apply for the service request to the garage owner via email.
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function create(Request $request)
     {
         $request->validate([
@@ -77,6 +89,13 @@ class CarServicingController extends Controller
         return error('Garage has no available requested service', type: 'notfound');
     }
 
+    /**
+     * Authenticate garage owner update car service status for specific car service which can be on their garage.
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return json response
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -94,6 +113,12 @@ class CarServicingController extends Controller
         return error('Car Service Not Found', type: 'notfound');
     }
 
+    /**
+     * Authenticate garage owner soft delete car service which can be on their garage.
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function delete($id)
     {
         $car_servicing = CarServicing::where([['id', $id], ['garage_id', Auth::user()->garage->id]])->first();
@@ -104,6 +129,12 @@ class CarServicingController extends Controller
         return error('Car service not found', type: 'notfound');
     }
 
+    /**
+     * Authenticate garage owner force delete car service which can be on their garage.
+     *
+     * @param  mixed $id
+     * @return json response
+     */
     public function forceDelete($id)
     {
         $car_servicing = CarServicing::onlyTrashed()->where([['id', $id], ['garage_id', Auth::user()->garage->id]])->first();

@@ -20,7 +20,7 @@ class Admin
         if (Auth::user()->type == 'Admin') {
             return $next($request);
         } else {
-            return error('You have not access rights');
+            return error('You have not access rights', type: 'unauthenticated');
         }
     }
 }

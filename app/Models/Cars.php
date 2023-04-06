@@ -33,4 +33,9 @@ class Cars extends Model
     {
         return $this->hasMany(CarServicing::class, 'car_id', 'id');
     }
+
+    public function carServicingJobs()
+    {
+        return $this->hasManyThrough(CarServicingJob::class, CarServicing::class, 'car_id', 'car_servicing_id');
+    }
 }

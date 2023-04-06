@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Auth;
 
 class CarServicingJobController extends Controller
 {
+    /**
+     * Authenticate garage owner can only add one mechanic to the car service process,
+     * which can be in the garage and it provides same service type as a car service type. 
+     *
+     * @param  mixed $request
+     * @return json response
+     */
     public function create(Request $request)
     {
         $request->validate([
@@ -36,7 +43,8 @@ class CarServicingJobController extends Controller
                     'description'
                 ]
             ) + [
-                'service_type_id' => $car_servicing->service_id
+                'service_type_id' => $car_servicing->service_id,
+                'status'          => 'In-Progress'
             ]);
 
             return ok('Car servicing job created successfully', $car_servicing_job);
@@ -44,10 +52,19 @@ class CarServicingJobController extends Controller
         return error('Car cannot be applying for servicing job', type: 'notfound');
     }
 
+    /**
+     * Authenticate garage owners mechanic can only update their assigned,
+     * car service job status and the status also reflact to the car service status to parent.
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return json response
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:In-Progress,Complete'
+            'status'      => 'required|in:In-Progress,Complete',
+            'description' => 'required|string',
         ]);
 
         $car_servicing_job = CarServicingJob::where('mechanic_id', Auth::user()->id)->find($id);
@@ -56,7 +73,8 @@ class CarServicingJobController extends Controller
             if (isset($request->status)) {
                 $car_servicing_job->update($request->only(
                     [
-                        'status'
+                        'status',
+                        'description'
                     ]
                 ));
 

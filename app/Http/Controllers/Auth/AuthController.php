@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
+
+    /**
+     * Register the user with their type Customer, Mechanic, Garage owner
+     */
     public function register(Request $request)
     {
         $request->validate([
@@ -82,9 +86,12 @@ class AuthController extends Controller
 
         $token = $user->createToken('API Token')->accessToken;
 
-        return ok('User Registered Successfully', $user);
+        return ok('User registered successfully', $user);
     }
 
+    /**
+     * User login with their credentials
+     */
     public function login(Request $request)
     {
         $user = $request->validate([
@@ -93,14 +100,17 @@ class AuthController extends Controller
         ]);
 
         if (!auth()->attempt($user)) {
-            return error('Invalid User Details');
+            return error('Invalid user details', type: 'notfound');
         }
 
         $token = auth()->user()->createToken('API Token')->accessToken;
 
-        return ok('Logged In Successfully', $token);
+        return ok('Logged in successfully', $token);
     }
 
+    /**
+     * Verifying the registered user email
+     */
     public function verifyEmail($token)
     {
         $user = User::where('email_verification_token', $token)->first();
@@ -110,12 +120,15 @@ class AuthController extends Controller
                 'email_verification_token' => '',
             ]);
 
-            return ok('Email Verified Successfully');
+            return ok('Email verified successfully');
         } else {
-            return error('Email Already Verified');
+            return error('Email already verified', type: 'notfound');
         }
     }
 
+    /**
+     * Authenticated user that can be registerd but forgot the password creadintial
+     */
     public function forgotPassword(Request $request)
     {
         $request->validate([
@@ -135,9 +148,12 @@ class AuthController extends Controller
 
         Mail::to($request->email)->send(new ResetPasswordEmail($password_reset));
 
-        return ok('Password Forgot Mail Sent Successfully');
+        return ok('Password forgot mail sent successfully');
     }
 
+    /**
+     * Authenticate user that can be requested to reset their password via email
+     */
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -160,10 +176,10 @@ class AuthController extends Controller
 
                 PasswordReset::where('email', $request->email)->delete();
 
-                return ok('Password Changed Successfully');
+                return ok('Password changed successfully');
             }
         } else {
-            return error('Token Has Been expired');
+            return error('Token has been expired', type: 'unauthenticated');
         }
     }
 }
