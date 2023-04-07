@@ -38,7 +38,9 @@ trait ListingApiTrait
         }
 
         /* Get Garege listing by country */
-        $query = $query->where('country_id', request()->country);
+        if (request()->country) {
+            $query->where('country_id', request()->country);
+        }
 
         /* Get Garege listing by state */
         if (request()->state) {
