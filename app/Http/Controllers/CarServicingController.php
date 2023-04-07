@@ -25,7 +25,7 @@ class CarServicingController extends Controller
     public function list(Request $request)
     {
         $this->ListingValidation();
-        $query = CarServicing::query()->where('garage_id', Auth::user()->garage->id);
+        $query = CarServicing::query()->with('car')->where('garage_id', Auth::user()->garage->id);
 
         $searchableFields = ['status'];
 

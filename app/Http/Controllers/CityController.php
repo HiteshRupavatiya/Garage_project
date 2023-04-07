@@ -19,11 +19,11 @@ class CityController extends Controller
     public function list(Request $request)
     {
         $this->ListingValidation();
-        $city = City::query()->with('state');
+        $query = City::query()->with('state');
 
         $searchableFields = ['city_name'];
 
-        $data = $this->filterSearchPagination($city, $searchableFields);
+        $data = $this->filterSearchPagination($query, $searchableFields);
 
         return ok('Cities fetched successfully', [
             'cities' => $data['query']->get(),

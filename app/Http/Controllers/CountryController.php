@@ -19,11 +19,11 @@ class CountryController extends Controller
     public function list(Request $request)
     {
         $this->ListingValidation();
-        $country = Country::query()->with('states');
+        $query = Country::query()->with('states');
 
         $searchableFields = ['country_name'];
 
-        $data = $this->filterSearchPagination($country, $searchableFields);
+        $data = $this->filterSearchPagination($query, $searchableFields);
 
         return ok('Countries fetched successfully', [
             'countries' => $data['query']->get(),
