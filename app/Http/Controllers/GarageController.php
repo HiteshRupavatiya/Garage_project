@@ -33,22 +33,6 @@ class GarageController extends Controller
             'service_type' => 'nullable|exists:service_types,id'
         ]);
 
-        $query = $query->where('country_id', $request->country);
-
-        if ($request->state) {
-            $query->orWhere('state_id', $request->state);
-        }
-
-        if ($request->city) {
-            $query->orWhere('city_id', $request->city);
-        }
-
-        if (isset($request->service_type)) {
-            $query->orWhereHas('garageServiceTypes', function ($q) use ($request) {
-                $q->where('service_type_id', $request->service_type);
-            });
-        }
-
         $searchableFields = ['garage_name', 'address1', 'address2'];
 
         $data = $this->filterSearchPagination($query, $searchableFields);
