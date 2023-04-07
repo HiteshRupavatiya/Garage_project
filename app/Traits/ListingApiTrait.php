@@ -37,6 +37,26 @@ trait ListingApiTrait
             $query = $query->onlyTrashed();
         }
 
+        /* Get Garege listing by country */
+        $query = $query->where('country_id', request()->country);
+
+        /* Get Garege listing by state */
+        if (request()->state) {
+            $query->orWhere('state_id', request()->state);
+        }
+
+        /* Get Garege listing by city */
+        if (request()->city) {
+            $query->orWhere('city_id', request()->city);
+        }
+
+        /* Get Garege listing by their service types */
+        if (isset(request()->service_type)) {
+            $query->orWhereHas('garageServiceTypes', function ($q) use ($query) {
+                $q->where('service_type_id', request()->service_type);
+            });
+        }
+
         /* Search with searchable fields */
         if (request()->search) {
             $search = request()->search;
