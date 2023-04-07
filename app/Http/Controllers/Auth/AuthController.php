@@ -15,9 +15,11 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
-
     /**
      * Register the user with their type Customer, Mechanic, Garage owner
+     *
+     * @param  mixed $request
+     * @return json response
      */
     public function register(Request $request)
     {
@@ -91,6 +93,9 @@ class AuthController extends Controller
 
     /**
      * User login with their credentials
+     *
+     * @param  mixed $request
+     * @return json response
      */
     public function login(Request $request)
     {
@@ -110,6 +115,9 @@ class AuthController extends Controller
 
     /**
      * Verifying the registered user email
+     *
+     * @param  mixed $token
+     * @return json response
      */
     public function verifyEmail($token)
     {
@@ -128,6 +136,9 @@ class AuthController extends Controller
 
     /**
      * Authenticated user that can be registerd but forgot the password creadintial
+     *
+     * @param  mixed $request
+     * @return json response
      */
     public function forgotPassword(Request $request)
     {
@@ -152,7 +163,10 @@ class AuthController extends Controller
     }
 
     /**
-     * Authenticate user that can be requested to reset their password via email
+     * Authenticate user that can be requested to reset their password via email.
+     *
+     * @param  mixed $request
+     * @return json response
      */
     public function resetPassword(Request $request)
     {

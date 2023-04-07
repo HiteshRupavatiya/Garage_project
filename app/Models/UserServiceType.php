@@ -9,11 +9,21 @@ class UserServiceType extends Model
 {
     use HasFactory;
 
+    /**
+     * Inverse relation UserServiceType to User
+     *
+     * @return void
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Inverse relation UserServiceType to ServiceType
+     *
+     * @return void
+     */
     public function service()
     {
         return $this->belongsTo(ServiceType::class, 'service_type_id');

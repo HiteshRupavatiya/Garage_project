@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cars;
+use App\Models\User;
 use App\Traits\ListingApiTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,9 @@ class CarController extends Controller
 
     /**
      * Customer cars listing with applied service list, service job status
+     *
+     * @param  mixed $request
+     * @return json response
      */
     public function list(Request $request)
     {
@@ -31,6 +35,9 @@ class CarController extends Controller
 
     /**
      * Customer add multiple cars to their profile
+     *
+     * @param  mixed $request
+     * @return json response
      */
     public function create(Request $request)
     {
@@ -57,6 +64,9 @@ class CarController extends Controller
 
     /**
      * Customer get specified car details
+     *
+     * @param  mixed $id
+     * @return json response
      */
     public function get($id)
     {
@@ -69,6 +79,10 @@ class CarController extends Controller
 
     /**
      * Customer can update only specified car details that can be added to their profile
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return json response
      */
     public function update(Request $request, $id)
     {
@@ -96,6 +110,9 @@ class CarController extends Controller
 
     /**
      * Customer can soft deletes the specified car
+     *
+     * @param  mixed $id
+     * @return json response
      */
     public function delete($id)
     {
@@ -109,6 +126,9 @@ class CarController extends Controller
 
     /**
      * Customer can force delete the specified car
+     *
+     * @param  mixed $id
+     * @return json response
      */
     public function forceDelete($id)
     {

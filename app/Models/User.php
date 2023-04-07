@@ -56,16 +56,31 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * User to garage hasOne relation
+     *
+     * @return void
+     */
     public function garage()
     {
         return $this->hasOne(Garage::class, 'owner_id', 'id');
     }
 
+    /**
+     * User to UserServiceType hasOne relation
+     *
+     * @return void
+     */
     public function userServiceTypes()
     {
         return $this->hasOne(UserServiceType::class);
     }
 
+    /**
+     * User to Cars hasMany relation
+     *
+     * @return void
+     */
     public function cars()
     {
         return $this->hasMany(Cars::class, 'owner_id', 'id');

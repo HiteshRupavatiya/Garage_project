@@ -11,6 +11,11 @@ class Garage extends Model
     use HasFactory;
     use SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'garage_name',
         'address1',
@@ -22,37 +27,72 @@ class Garage extends Model
         'owner_id'
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array
+     */
     protected $hidden = [
         'created_at',
         'updated_at',
         'deleted_at'
     ];
 
+    /**
+     * Inverse relation Garage to User
+     *
+     * @return void
+     */
     public function user()
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
+    /**
+     * Inverse relation garage to city
+     *
+     * @return void
+     */
     public function city()
     {
         return $this->belongsTo(City::class, 'city_id');
     }
 
+    /**
+     * Inverse relation garage to state
+     *
+     * @return void
+     */
     public function state()
     {
         return $this->belongsTo(State::class, 'state_id');
     }
 
+    /**
+     * Inverse relation garage to country
+     *
+     * @return void
+     */
     public function country()
     {
         return $this->belongsTo(Country::class, 'country_id');
     }
 
+    /**
+     * Garage to GarageServiceType belongsToMany relation
+     *
+     * @return void
+     */
     public function garageServiceTypes()
     {
         return $this->belongsToMany(ServiceType::class, 'garage_service_types', 'garage_id', 'service_type_id');
     }
 
+    /**
+     * Garage to CarServicing hasMany relation
+     *
+     * @return void
+     */
     public function carServices()
     {
         return $this->hasMany(CarServicing::class, 'garage_id');
